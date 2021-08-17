@@ -1,0 +1,37 @@
+﻿@model OrderFormModel
+
+
+<div class="mx-auto w-50">
+    @*<div class="form-group">
+        <label asp-for="OrderName"></label>
+        <input asp-for="OrderName" class="form-control" />
+        <span asp-validation-for="OrderName" class="text-danger"></span>
+    </div>*@
+    <div class="form-group">
+        <label>Customer</label>
+        <select asp-for="CustomerId" asp-items="@Model.Customers" class="form-control">
+            <option>Please select one</option>
+        </select>
+        <span asp-validation-for="CustomerId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label>Product</label>
+        <select asp-for="ProductId" asp-items="@Model.Products" class="form-control">
+            <option>Please select one</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Order date</label>
+        <input asp-for="OrderDate" class="form-control" type="date" />
+        <span asp-validation-for="OrderDate" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label>Amount</label>
+        <input asp-for="Amount" class="form-control" type="number" min="0" max="1000" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-success">Submit</button>
+    </div>
+
+</div>

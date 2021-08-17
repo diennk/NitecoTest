@@ -1,0 +1,99 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model OrderSearchResult
+@{
+    var narrow = Model.OrderSearchModel.OrderDesc == 1 ? "🔼" : "🔽";
+
+    string buildOrderingUrl(string key)
+    {
+        var queryString = System.Web.HttpUtility.ParseQueryString(Context.Request.QueryString.ToUriComponent());
+
+        queryString["OrderSearchModel.OrderField"] = key;
+        queryString["OrderSearchModel.OrderDesc"] = Model.OrderSearchModel.OrderDesc == 1 ? "0" : "1";
+
+
+        return Context.Request.Path + "?" + queryString.ToString();
+    }
+
+    string buildPaging(int pageIndex)
+    {
+        var queryString = System.Web.HttpUtility.ParseQueryString(Context.Request.QueryString.ToUriComponent());
+        queryString["OrderSearchModel.PageIndex"] = pageIndex.ToString();
+        return Context.Request.Path + "?" + queryString.ToString();
+    }
+}
+<form role="form" method="get">
+    <div class="form-inline">
+        <strong>Orders Management</strong>
+        <input asp-for="OrderSearchModel.CategoryName" class="form-control ml-3" placeholder="Enter category to search" />
+        <button type="submit" class="btn btn-info ml-3">Search</button>
+        <div class="ml-auto">
+            <a class="btn btn-primary" asp-action="Create">Create New Order</a>
+        </div>
+    </div>
+</form>
+<table class="table table-bordered table-striped mt-3">
+    <tr>
+        <th>
+            <a class="btn btn-block d-flex flex-row align-items-center justify-content-between font-weight-bold p-0" href="@buildOrderingUrl("ProductName")">
+                <span>Product Name</span>
+                @if (Model.OrderSearchModel.OrderField == "ProductName")
+                {
+                    <span>@narrow</span>
+                }
+            </a>
+        </th>
+        <th>
+            <a class="btn btn-block d-flex flex-row align-items-center justify-content-between font-weight-bold p-0" href="@buildOrderingUrl("CategoryName")">
+                <span>Category Name</span>
+                @if (Model.OrderSearchModel.OrderField == "CategoryName")
+                {
+                    <span>@narrow</span>
+                }
+            </a>
+        </th>
+        <th>
+            <a class="btn btn-block d-flex flex-row align-items-center justify-content-between font-weight-bold p-0" href="@buildOrderingUrl("CustomerName")">
+                <span>Customer Name</span>
+                @if (Model.OrderSearchModel.OrderField == "CustomerName")
+                {
+                    <span>@narrow</span>
+                }
+            </a>
+        </th>
+        <th>Order Date</th>
+        <th>Amount</th>
+    </tr>
+    @foreach (var item in Model.Orders)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoryName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Amount)
+            </td>
+        </tr>
+    }
+</table>
+
+<div>
+    <ul class="pagination">
+        @for (var i = 1; i <= (Model.OrderSearchModel.Total / Model.OrderSearchModel.PageSize + (Model.OrderSearchModel.Total % Model.OrderSearchModel.PageSize > 0 ? 1 : 0)); i++)
+        {
+            <li class="page-item @(i == Model.OrderSearchModel.PageIndex ? "active" : "")">
+                <a href="@buildPaging(i)" class="page-link">@i</a>
+            </li>
+        }
+    </ul>
+</div>
